@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-disk-data
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: premium-managed-disk-storageclass
+  resources:
+    requests:
+      storage: 8Gi

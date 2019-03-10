@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-view-deployment
+  namespace: kidangel
+  labels:
+    app: data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data
+  template:
+    metadata:
+      labels:
+        app: data
+    spec:
+      containers:
+      - name: data
+        image: sonct/alpine:latest
+        command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: share-premium-data-disk
+          subPath: data
+          mountPath: /data
+        - name: share-standard-data-disk
+          subPath: data
+          mountPath: /data-standard
+      volumes:
+      - name: share-premium-data-disk
+        persistentVolumeClaim:
+          claimName: share-premium-data-disk
+      - name: share-standard-data-disk
+        persistentVolumeClaim:
+          claimName: share-standard-data-disk
+      nodeSelector:
+        hostname: aks-agentpool-31956352-2

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: default-test
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: default-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-persistent-storage
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kidangel-data
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nexus3-persistent-storage1
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nexus3-persistent-storage2
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 20Gi

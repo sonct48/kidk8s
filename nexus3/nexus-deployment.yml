@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nexus3-deployment
+  namespace: kidangel
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: nexus3
+    spec:
+      securityContext:
+        runAsUser: 200
+        fsGroup: 200
+      containers:
+      - name: nexus3
+        image: sonatype/nexus3:3.15.2
+#        command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+          name: nexus3-http
+        - containerPort: 5000
+          name: nexus3-port5k
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 1000m
+        env:
+        - name: hostname
+          value: "nexus3"
+        volumeMounts:
+        - name: nexus3-disk-data
+          subPath: data/nexus3
+          mountPath: /nexus-data
+          #mountPath: /data/nexus3
+      volumes:
+      - name: nexus3-disk-data
+        persistentVolumeClaim:
+          #claimName: share-premium-data-disk
+          claimName: nexus3-disk-data
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: nexus3-lb
+#  namespace: kidangel
+#spec:
+#  type: LoadBalancer
+#  loadBalancerIP: 104.211.45.78
+#  ports:
+#  - port: 80
+#  selector:
+#    app: nexus3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus3-service
+  namespace: kidangel
+spec:
+  ports:
+  - port: 8081
+  selector:
+    app: nexus3

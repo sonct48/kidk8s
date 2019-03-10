@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: sonarqube-devopsgalaxy-cert
+  namespace: kidangel
+spec:
+  secretName: sonarqube-devopsgalaxy-cert
+  dnsNames:
+  - sonarqube.devopsgalaxy.com
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - sonarqube.devopsgalaxy.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: kidangel
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: sonar-data
+          subPath: sonar
+          mountPath: /data/sonar-data
+        - name: sonar-postgres-data
+          subPath: sonar-postgres-data
+          mountPath: /data/sonar-postgres-data
+      volumes:
+      - name: sonar-data
+        persistentVolumeClaim:
+          claimName: share-standard-data-disk
+      - name: sonar-postgres-data
+        persistentVolumeClaim:
+          claimName: share-standard-data-disk
+

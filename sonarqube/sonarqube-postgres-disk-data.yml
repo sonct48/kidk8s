@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-postgres-data-disk
+  namespace: kidangel
+  labels:
+    app: sonarqube
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: premium-managed-disk-storageclass
+  resources:
+    requests:
+      storage: 8Gi

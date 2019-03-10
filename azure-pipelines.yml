@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+name: $(TeamProject)_$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+# Disable Trigger
+#trigger: 
+#- master
+
+variables: 
+  - group: aks
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- script: |
+    echo Login k8s
+    az login --service-principal --username $(username) --password $(password) --tenant $(tenant)
+    az aks get-credentials --resource-group seakidk8s --name seakidk8s
+    kubectl get svc --namespace=kidangel
+  displayName: 'K8s login'
+
+- script: |
+    echo Login k8s
+    az logout
+  displayName: 'K8s logout'
+

@@ -1,0 +1,40 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: $(TeamProject)_$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+# Disable Trigger
+#trigger: Disable
+#- master
+
+variables: 
+  - group: aks
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: echo This is Jenkins Deployment Pipelines!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- script: |
+    echo Login k8s
+    az login --service-principal --username $(username) --password $(password) --tenant $(tenant)
+    az aks get-credentials --resource-group seakidk8s --name seakidk8s
+    kubectl get svc --namespace=kidangel
+    kubectl apply -f ./jenkins/jenkins-deployment.yml
+    kubectl apply -f ./ingress/jenkins-ingress-tls.yml
+  displayName: 'K8s login'
+
+- script: |
+    echo Login k8s
+    az logout
+    #rm -rf ~/.kube/config
+    #ls -al ~/.kube/config
+  displayName: 'K8s logout'
+

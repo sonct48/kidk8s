@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kidpyweb-ingress-tls
+  namespace: kidangel
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+#    ingress.kubernetes.io/whitelist-source-range: 52.187.58.37/32
+    nginx.ingress.kubernetes.io/whitelist-source-range: 52.187.58.37/32
+spec:
+  tls:
+  - hosts:
+    - www.devopsgalaxy.com
+    secretName: www-devopsgalaxy-cert
+  rules:
+  - host: www.devopsgalaxy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kidpyweb-service
+          servicePort: 8000

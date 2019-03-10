@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kidpyweb-deployment
+  namespace: kidangel
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: kidpyweb
+    spec:
+      containers:
+      - name: kidpyweb
+        image: sonct/kidpyweb:latest
+#        image: sonct/kidpyweb:v1.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 1000m
+        env:
+        - name: db
+          value: "sqllite"
+      imagePullSecrets:
+      - name: sonctdockerhub
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: kidpyweb-lb
+#  namespace: kidangel
+#spec:
+#  type: LoadBalancer
+#  loadBalancerIP: 104.211.45.78
+#  ports:
+#  - port: 80
+#  selector:
+#    app: kidpyweb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kidpyweb-service
+  namespace: kidangel
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: kidpyweb

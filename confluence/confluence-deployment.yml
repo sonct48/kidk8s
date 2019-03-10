@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: confluence-deployment
+  namespace: kidangel
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: kubec
+    spec:
+      #securityContext:
+      #  runAsUser: 200
+      #  fsGroup: 200
+      containers:
+      - name: confluence
+        image: atlassian/confluence-server
+#        command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8090
+          name: confluence-p1
+        - containerPort: 8091
+          name: confluence-p2
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 500m
+        env:
+        - name: hostname
+          value: "confluence"
+        - name: CATALINA_CONNECTOR_PROXYNAME
+          value: "confluence.devopsgalaxy.com"
+        - name: CATALINA_CONNECTOR_PROXYPORT
+          value: "80"
+        - name: CATALINA_CONNECTOR_SCHEME
+          value: "http"
+        - name: CATALINA_CONNECTOR_SECURE
+          value: "false"
+        - name: CATALINA_CONTEXT_PATH
+          value: ""
+        volumeMounts:
+        - name: confluence-disk-data
+          subPath: data/confluence/confluence-data
+          mountPath: /var/atlassian/application-data/confluence
+          #mountPath: /data/confluence
+      volumes:
+      - name: confluence-disk-data
+        persistentVolumeClaim:
+          claimName: share-premium-data-disk
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: confluence-lb
+#  namespace: kidangel
+#spec:
+#  type: LoadBalancer
+#  loadBalancerIP: 104.211.45.78
+#  ports:
+#  - port: 80
+#  selector:
+#    app: confluence
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: confluence-service
+  namespace: kidangel
+spec:
+  ports:
+  - name: port1
+    port: 8090
+    protocol: TCP
+  - name: port2
+    port: 8091
+    protocol: TCP
+  selector:
+    app: confluence

@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nexus3-ingress-devopsgalaxy-tls
+  namespace: kidangel
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/whitelist-source-range: 52.77.225.197/32
+spec:
+  tls:
+  - hosts:
+    - nexus3.devopsgalaxy.com
+    secretName: nexus3-devopsgalaxy-cert
+  rules:
+  - host: nexus3.devopsgalaxy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nexus3-service
+          servicePort: 8081

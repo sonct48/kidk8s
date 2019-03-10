@@ -1,0 +1,11 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: premium-managed-disk-storageclass
+  namespace: kidangel
+provisioner: kubernetes.io/azure-disk
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+parameters:
+  storageaccounttype: Premium_LRS
+  kind: managed

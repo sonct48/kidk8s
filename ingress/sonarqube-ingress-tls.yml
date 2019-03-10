@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sonarqube-ingress-devopsgalaxy-tls
+  namespace: kidangel
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/whitelist-source-range: 52.77.225.197/32
+spec:
+  tls:
+  - hosts:
+    - sonarqube.devopsgalaxy.com
+    secretName: sonarqube-devopsgalaxy-cert
+  rules:
+  - host: sonarqube.devopsgalaxy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: sonarqube-service
+          servicePort: 9000

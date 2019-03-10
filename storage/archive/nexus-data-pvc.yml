@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nexus3-persistent-storage
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nexus-storage-class
+  resources:
+    requests:
+      storage: 20Gi

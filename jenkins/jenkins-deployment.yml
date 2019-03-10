@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  namespace: kidangel
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: jenkinsapp
+# image: jenkins/jenkins:2.150.1-alpine
+        image: jenkins/jenkins:lts
+        imagePullPolicy: Always
+        ports:
+        - name: http-port
+          containerPort: 8080
+        - name: agent-port
+          containerPort: 50000
+        volumeMounts:
+        - name: jenkins-persistent-storage
+          mountPath: /var/jenkins_home/
+          subPath: data/jenkins
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 500m
+#        env:
+#        - name: db
+#          value: "sqllite"
+      volumes:
+      - name: jenkins-persistent-storage
+        persistentVolumeClaim:
+          claimName: jenkins-disk-data
+      imagePullSecrets:
+      - name: sonctdockerhub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: kidangel
+spec:
+  ports:
+  - name: http-port
+    port: 8080
+    protocol: TCP
+  - name: agent-port
+    port: 50000
+    protocol: TCP
+  selector:
+    app: jenkins

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-disk-data
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard-managed-disk-storageclass
+  resources:
+    requests:
+      storage: 32Gi

@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kidpyweb-service
+  namespace: kidangel
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: kidpyweb
+    version: v1
+    env: azure

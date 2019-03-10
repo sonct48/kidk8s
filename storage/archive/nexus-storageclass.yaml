@@ -1,0 +1,14 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: nexus-storage-class
+provisioner: kubernetes.io/azure-file
+reclaimPolicy: Retain
+mountOptions:
+  - dir_mode=0755
+  - file_mode=0755
+  - uid=200
+  - gid=200
+parameters:
+  skuName: Standard_LRS
+  storageAccount: kidk8sdata

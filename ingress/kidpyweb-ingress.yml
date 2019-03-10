@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kidpyweb-ingress
+  namespace: kidangel
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/whitelist-source-range: 52.77.225.197/32
+spec:
+#  tls:
+#  - hosts:
+#    - django.devopsgalaxy.com
+#    secretName: aks-ingress-tls
+  rules:
+  - host: www.devopsgalaxy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kidpyweb-service
+          servicePort: 8000

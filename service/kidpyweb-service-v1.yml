@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kidpyweb-lb
+  namespace: kidangel
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 104.211.45.78
+  ports:
+  - port: 80
+  selector:
+    app: kidpyweb
+    version: v1
+    env: azure
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kidpyweb-service-v1
+  namespace: kidangel
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: kidpyweb
+    version: v1
+    env: azure

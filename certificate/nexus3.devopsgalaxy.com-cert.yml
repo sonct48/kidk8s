@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: nexus3-devopsgalaxy-cert
+  namespace: kidangel
+spec:
+  secretName: nexus3-devopsgalaxy-cert
+  dnsNames:
+  - nexus3.devopsgalaxy.com
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - nexus3.devopsgalaxy.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

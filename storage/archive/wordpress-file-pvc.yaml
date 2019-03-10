@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-data
+  namespace: kidangel
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: kidk8sdata
+  resources:
+    requests:
+      storage: 20Gi

@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sonarqube-postgres-db
+  namespace: kidangel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube-postgres
+      tier: postgres
+  template:
+    metadata:
+      name: sonarqube-postgres-db
+      labels:
+        name: sonarqube-postgres-db
+        tier: postgres
+        app: sonarqube-postgres
+    spec:
+      #securityContext:
+        #runAsUser: 999
+        #fsGroup: 999
+      containers:
+        - image: postgres:11.1
+          name: sonarqube-postgres-db
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 500m
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sonarqube-postgres-secret
+                  key: password
+            - name: POSTGRES_USER
+              value: sonar
+          ports:
+            - containerPort: 5432
+              name: postgresport
+          volumeMounts:
+            # This name must match the volumes.name below.
+            - name: sonarqube-postgres-data-disk
+              mountPath: /var/lib/postgresql/data
+              subPath: data/sonar/sonar-postgres-data
+              #mountPath: /data
+      volumes:
+        - name: sonarqube-postgres-data-disk
+          persistentVolumeClaim:
+            #claimName: share-premium-data-disk
+            claimName: sonarqube-postgres-data-disk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-postgres-db-service
+  namespace: kidangel
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: sonarqube-postgres
